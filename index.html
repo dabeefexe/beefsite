@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>beef.exe</title>
+<link rel="icon" href="beef.png">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#ff2b2b;
+    --darkred:#7a0f0f;
+    --lime:#39ff14;
+    --bg:#050505;
+    --panel:#1a1a1a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(122,15,15,.35) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(57,255,20,.06) 0%, transparent 40%),
+      repeating-linear-gradient(45deg, #0a0a0a 0 20px, #060606 20px 40px);
+    color:#e8e8e8;
+    font-family:'VT323',monospace;
+    font-size:20px;
+    overflow-x:hidden;
+    cursor:url("beef.png") 12 12, auto;
+  }
+  body.chaos{animation:chaoshue 2s linear infinite}
+  body.chaos .spin{animation-duration:.6s}
+  @keyframes chaoshue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+
+  .scanlines{
+    pointer-events:none;position:fixed;inset:0;z-index:9990;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 4px);
+    mix-blend-mode:multiply;
+  }
+  a{color:var(--lime)}
+  a:visited{color:#9dff7a}
+  h1,h2,h3,.pixel{font-family:'Press Start 2P',monospace}
+
+  .wrap{max-width:900px;margin:0 auto;padding:16px;position:relative;z-index:2}
+
+  .marquee-bar{
+    border:2px solid var(--red);background:#120404;color:var(--red);
+    padding:4px 0;font-family:'Press Start 2P';font-size:11px;letter-spacing:1px;
+    box-shadow:0 0 12px rgba(255,43,43,.4);margin-bottom:14px;
+  }
+
+  header{text-align:center;padding:18px 0 8px}
+  .logo-row{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap}
+  .logo-beef{width:96px;height:96px;image-rendering:pixelated;animation:spin 6s linear infinite;filter:drop-shadow(0 0 14px rgba(255,43,43,.8))}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .wordart{
+    font-family:'Press Start 2P';font-size:clamp(22px,6vw,44px);margin:0;
+    background:linear-gradient(180deg,#fff 0%,var(--red) 40%,var(--darkred) 70%,#000 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:3px 3px 0 #000, 0 0 24px rgba(255,43,43,.6);
+    transform:skewX(-6deg);
+  }
+  .tagline{color:var(--lime);font-size:22px;margin-top:10px}
+  .blink{animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .win{
+    background:#c0c0c0;color:#000;border:2px solid #fff;
+    border-right-color:#404040;border-bottom-color:#404040;
+    box-shadow:4px 4px 0 #000;margin-bottom:18px;
+  }
+  .win-title{
+    background:linear-gradient(90deg,#000080,#1084d0);color:#fff;
+    font-family:'Press Start 2P';font-size:10px;padding:5px 8px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .win-title .btns{display:flex;gap:4px}
+  .win-title .btns span{background:#c0c0c0;color:#000;border:1px solid #fff;border-right-color:#404040;border-bottom-color:#404040;padding:1px 5px;font-size:9px}
+  .win-body{padding:14px}
+
+  .cols{display:grid;grid-template-columns:250px 1fr;gap:18px}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}}
+
+  .sidebox{
+    border:2px dashed var(--red);background:var(--panel);padding:10px;margin-bottom:14px;
+    box-shadow:0 0 10px rgba(255,43,43,.25) inset;
+  }
+  .sidebox h3{color:var(--red);font-size:11px;margin:0 0 8px;border-bottom:1px solid var(--darkred);padding-bottom:6px}
+  .avatar{width:120px;height:120px;image-rendering:pixelated;display:block;margin:0 auto 8px;filter:drop-shadow(0 0 8px rgba(255,43,43,.7))}
+  .stat{display:flex;justify-content:space-between;font-size:19px}
+  .stat b{color:var(--lime)}
+
+  .blinky{
+    display:block;margin:6px 0;padding:3px 6px;font-family:'Press Start 2P';font-size:9px;
+    color:#000;text-align:center;letter-spacing:1px;
+  }
+  .b1{background:linear-gradient(90deg,#ff2b2b,#ffb3b3)}
+  .b2{background:linear-gradient(90deg,#39ff14,#c8ffb3)}
+  .b3{background:linear-gradient(90deg,#00e5ff,#ffd6ff)}
+  .b4{background:repeating-linear-gradient(45deg,#ff0 0 10px,#000 10px 20px);color:#ff0}
+  .b5{background:linear-gradient(90deg,#ff00d4,#ffe14d)}
+  .b6{background:linear-gradient(90deg,#00e5ff,#39ff14)}
+
+  .section-title{
+    color:var(--red);font-size:14px;margin:0 0 12px;
+    text-shadow:2px 2px 0 #000, 0 0 10px rgba(255,43,43,.5);
+  }
+  .section-title::before{content:"★ ";color:var(--lime)}
+  .section-title::after{content:" ★";color:var(--lime)}
+
+  .glitch{position:relative;display:inline-block}
+  .glitch:hover{animation:glitchy .3s infinite}
+  @keyframes glitchy{
+    0%{transform:translate(0);text-shadow:2px 0 var(--lime),-2px 0 #00e5ff}
+    50%{transform:translate(-2px,1px);text-shadow:-2px 0 var(--lime),2px 0 var(--red)}
+    100%{transform:translate(2px,-1px);text-shadow:2px 0 var(--red),-2px 0 #00e5ff}
+  }
+
+  .weird-list{list-style:none;padding:0;margin:0}
+  .weird-list li{padding:2px 0}
+  .weird-list li::before{content:"► ";color:var(--red)}
+
+  .btn{
+    font-family:'Press Start 2P';font-size:10px;padding:10px 12px;cursor:pointer;
+    background:#000;color:var(--lime);border:2px solid var(--lime);
+    box-shadow:3px 3px 0 var(--darkred);margin:4px 4px 4px 0;
+  }
+  .btn:hover{background:var(--lime);color:#000;box-shadow:3px 3px 0 var(--red)}
+  .btn:active{transform:translate(2px,2px);box-shadow:0 0 0 #000}
+  .btn.red{color:var(--red);border-color:var(--red)}
+  .btn.red:hover{background:var(--red);color:#000}
+
+  #bubble{
+    display:none;margin-top:12px;padding:10px;border:2px solid var(--lime);
+    background:#001a00;color:var(--lime);font-size:22px;min-height:30px;
+  }
+  #bubble::after{content:"_";animation:blink 1s steps(1) infinite}
+
+  .eq{display:inline-flex;align-items:flex-end;gap:2px;height:18px;margin-right:8px;vertical-align:middle}
+  .eq i{width:4px;background:var(--lime);animation:eq .8s ease-in-out infinite}
+  .eq i:nth-child(1){height:40%;animation-delay:0s}
+  .eq i:nth-child(2){height:90%;animation-delay:.15s}
+  .eq i:nth-child(3){height:60%;animation-delay:.3s}
+  .eq i:nth-child(4){height:100%;animation-delay:.45s}
+  .eq i:nth-child(5){height:30%;animation-delay:.6s}
+  @keyframes eq{50%{transform:scaleY(.2)}}
+
+  #dlwrap{display:none;margin-top:12px;border:2px solid #000;background:#c0c0c0;color:#000;padding:10px;font-family:'VT323'}
+  #dlbar{height:18px;background:#fff;border:1px solid #000;margin:6px 0}
+  #dlfill{height:100%;width:0%;background:repeating-linear-gradient(90deg,#000080 0 10px,#1084d0 10px 20px)}
+  #dlpct{font-size:18px}
+
+  .guest-entry{border:1px dashed var(--darkred);padding:8px;margin:8px 0;background:#120404}
+  .guest-entry .who{color:var(--lime)}
+  .guest-entry .when{color:#888;font-size:16px;float:right}
+
+  #HCB_comment_box{font-family:'VT323',monospace;font-size:20px;color:#e8e8e8}
+  #HCB_comment_box h3{color:var(--red);font-family:'Press Start 2P',monospace;font-size:11px}
+  #HCB_comment_box textarea,#HCB_comment_box input[type=text]{
+    background:#000;border:2px solid var(--darkred);color:var(--lime);
+    font-family:'VT323',monospace;font-size:20px;padding:6px;width:100%;
+  }
+  #HCB_comment_box #hcb_submit{
+    font-family:'Press Start 2P',monospace;font-size:10px;padding:10px 12px;cursor:pointer;
+    background:#000;color:var(--lime);border:2px solid var(--lime);
+    box-shadow:3px 3px 0 var(--darkred);
+  }
+  #HCB_comment_box #hcb_submit:hover{background:var(--lime);color:#000}
+  #HCB_comment_box .hcb_comment{border:1px dashed var(--darkred);padding:8px;margin:8px 0;background:#120404}
+  #HCB_comment_box .hcb_comment .author{color:var(--lime)}
+  #HCB_comment_box .hcb_comment .date{color:#888;font-size:16px}
+  #HCB_comment_box a{color:var(--lime)}
+
+  #gbform input,#gbform textarea{
+    width:100%;background:#000;border:2px solid var(--darkred);color:var(--lime);
+    font-family:'VT323';font-size:20px;padding:6px;margin:4px 0;
+  }
+
+  footer{text-align:center;padding:20px 0 40px;color:#777}
+  .counter{
+    display:inline-flex;gap:2px;margin:0 8px;vertical-align:middle;
+  }
+  .counter span{
+    background:#000;color:#f00;border:1px solid #444;
+    font-family:'Press Start 2P';font-size:14px;padding:4px 6px;
+    text-shadow:0 0 6px #f00;
+  }
+  .webring{margin-top:10px;font-size:19px}
+  .cringe{color:#555;font-size:16px}
+
+  .trailbeef{position:fixed;pointer-events:none;width:22px;height:22px;image-rendering:pixelated;z-index:9995;animation:fadeout .7s forwards}
+  @keyframes fadeout{to{opacity:0;transform:translateY(14px) scale(.4)}}
+
+  .rainbeef{position:fixed;top:-40px;width:32px;height:32px;image-rendering:pixelated;z-index:9991;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+  .errwin{
+    position:fixed;z-index:9999;width:320px;background:#c0c0c0;color:#000;
+    border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;
+    box-shadow:5px 5px 0 rgba(0,0,0,.6);font-family:'VT323';
+  }
+  .errwin .etitle{background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font-family:'Press Start 2P';font-size:9px;padding:4px 6px;cursor:move;user-select:none}
+  .errwin .ebody{padding:14px;display:flex;gap:12px;align-items:center;font-size:20px}
+  .errwin .ebody img{width:32px;height:32px;image-rendering:pixelated}
+  .errwin .eok{display:block;margin:0 auto 12px;font-family:'VT323';font-size:18px;padding:2px 24px;background:#c0c0c0;border:2px solid #fff;border-right-color:#404040;border-bottom-color:#404040;cursor:pointer}
+
+  #secret{display:none;text-align:center;padding:10px;color:var(--lime)}
+  #secret img{width:200px;height:200px;image-rendering:pixelated;animation:spin 1.2s linear infinite}
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<div class="wrap">
+  <div class="marquee-bar">
+    <marquee scrollamount="6">WELCOME TO MY LIL SPACE!!! ★ best viewed with your eyes ★ now 100% beef ★ do not feed the beef ★ you are visitor number [REDACTED] ★</marquee>
+  </div>
+
+  <header>
+    <div class="logo-row">
+      <img src="beef.png" class="logo-beef" id="bigbeef" alt="beef" title="do NOT click me">
+      <h1 class="wordart">BEEF.EXE</h1>
+    </div>
+    <p class="tagline"><span class="blink">■</span> my lil sapce of the internet <span class="blink">■</span></p>
+    <p style="color:#888;font-size:17px;margin-top:2px">est. whenever · status: online (probably) · vibe: meaty</p>
+  </header>
+
+  <div class="cols">
+    <aside>
+      <div class="sidebox">
+        <h3>ABOUT ME</h3>
+        <img src="beef.png" class="avatar" alt="me">
+        <p>hi im <b style="color:var(--red)">beef</b>. i live in your computer. i was compiled in a microwave.</p>
+        <p>hobbies: gta, computer graphics, existing, being cringe, free real estate</p>
+      </div>
+
+      <div class="sidebox">
+        <h3>MY STATS</h3>
+        <div class="stat"><span>MOOD</span><b>meaty</b></div>
+        <div class="stat"><span>BRAIN</span><b>404</b></div>
+        <div class="stat"><span>CRINGE</span><b>100%</b></div>
+        <div class="stat"><span>COOKED</span><b>medium rare</b></div>
+        <div class="stat"><span>LOCATION</span><b>the walls</b></div>
+      </div>
+
+      <div class="sidebox">
+        <h3>BLINKIES</h3>
+        <span class="blinky b1">I ♥ GTA</span>
+        <span class="blinky b2">CERTIFIED GAMER</span>
+        <span class="blinky b3">PROFESSIONAL MEAT</span>
+        <span class="blinky b4">UNDER CONSTRUCTION 4EVER</span>
+        <span class="blinky b5">INTERNET GHOST</span>
+        <span class="blinky b6">I ♥ COMPUTER GRAPHICS</span>
+      </div>
+
+      <div class="sidebox">
+        <h3>NOW PLAYING</h3>
+        <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
+        <span>cows.mp3</span><br>
+        <span style="color:#888">0:00 / ??? · on repeat since 1997</span>
+      </div>
+    </aside>
+
+    <main>
+      <div class="win">
+        <div class="win-title"><span>weird_stuff.exe</span><div class="btns"><span>_</span><span>□</span><span>X</span></div></div>
+        <div class="win-body">
+          <h2 class="section-title">WEIRD STUFF ZONE</h2>
+          <button class="btn" id="speakbtn">SPEAK, BEEF</button>
+          <button class="btn red" id="rainbtn">BEEF RAIN</button>
+          <button class="btn" id="weirdbtn">MAKE IT WEIRDER</button>
+          <button class="btn red" id="dlbtn">DOWNLOAD BEEF.EXE</button>
+          <div id="bubble"></div>
+          <div id="dlwrap">
+            <div>Downloading beef.exe ...</div>
+            <div id="dlbar"><div id="dlfill"></div></div>
+            <div id="dlpct">0%</div>
+          </div>
+          <div id="secret">
+            <img src="beef.png" alt="the true beef">
+            <p class="pixel" style="font-size:11px">YOU FOUND THE TRUE BEEF. YOUR REWARD: NOTHING. YOUR PUNISHMENT: NOTHING.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="win">
+        <div class="win-title"><span>facts.txt</span><div class="btns"><span>_</span><span>□</span><span>X</span></div></div>
+        <div class="win-body">
+          <h2 class="section-title">BEEF FACTS (VERIFIED BY ME)</h2>
+          <ul class="weird-list">
+            <li>beef is just cow with extra steps</li>
+            <li>your bones are wet right now</li>
+            <li>the average beef has never seen the ocean</li>
+            <li>this fact is stored in the meat</li>
+            <li>beef fact #8 does not exist. do not look for it</li>
+            <li>sciencetists agree: beef</li>
+            <li>the moon is 73% beef (source: me)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="win">
+        <div class="win-title"><span>guestbook.cgi</span><div class="btns"><span>_</span><span>□</span><span>X</span></div></div>
+        <div class="win-body">
+          <h2 class="section-title">GUESTBOOK</h2>
+          <div id="HCB_comment_box">loading comments...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div>you are visitor number
+      <span class="counter" id="counter"></span>
+      congratluations
+    </div>
+    <div class="webring">
+      <a href="#" onclick="return fakeLink('the previous site was eaten')">◄ prev</a> ·
+      <a href="#" onclick="return fakeLink('the ring is a lie')">random</a> ·
+      <a href="#" onclick="return fakeLink('next site is still loading... since 2001')">next ►</a>
+    </div>
+    <p class="cringe">© beef.exe · do not steal my beef</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var beefClicks=0, rainOn=false, chaos=false;
+
+  var facts=[
+    "you have consumed approximately 0 beef reading this site",
+    "beef.exe was originally cow.exe but i renamed it for legal reasons",
+    "if you read this you are legally my friend now",
+    "the beef you see is a rendering. the real beef is in your heart",
+    "this website weighs less than a real beef. disappointing",
+    "somewhere, a cow is thinking about you",
+    "i am not a virus. i am a lifestyle",
+    "press the konami code. or dont. the beef cannot force you"
+  ];
+  var quotes=[
+    "MOO. sorry. force of habit.",
+    "i have seen your search history. we do not speak of it.",
+    "beef is stored in the beef",
+    "you clicked a button and a piece of meat answered. welcome to the future",
+    "error 413: payload too meaty",
+    "i would tell you a secret but it is classified beef",
+    "hello. it is me. the beef. from the computer.",
+    "have you drank water today. this is a beef intervention."
+  ];
+  var errs=[
+    "beef.exe has stopped working",
+    "beef.exe was never working",
+    "FATAL ERROR: not enough beef",
+    "beef.exe is emotionally unavailable",
+    "warning: beef levels critical"
+  ];
+
+  var konami=["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+  var kpos=0;
+  document.addEventListener("keydown",function(e){
+    if(e.key.toLowerCase()===konami[kpos].toLowerCase()||e.key===konami[kpos]){
+      kpos++;
+      if(kpos===konami.length){
+        kpos=0;
+        chaos=!chaos;
+        document.body.classList.toggle("chaos",chaos);
+        spawnError("KONAMI ACCEPTED. CHAOS "+(chaos?"ENABLED":"DISABLED"));
+      }
+    }else{kpos=0;}
+  });
+
+  document.getElementById("speakbtn").addEventListener("click",function(){
+    var b=document.getElementById("bubble");
+    b.style.display="block";
+    b.textContent="> "+quotes[Math.floor(Math.random()*quotes.length)];
+  });
+
+  document.getElementById("weirdbtn").addEventListener("click",function(){
+    chaos=!chaos;
+    document.body.classList.toggle("chaos",chaos);
+    if(chaos){spawnError("what have you done");}
+  });
+
+  document.getElementById("rainbtn").addEventListener("click",function(){
+    rainOn=!rainOn;
+    this.textContent=rainOn?"STOP THE BEEF":"BEEF RAIN";
+    if(rainOn)rainLoop();
+  });
+
+  function rainLoop(){
+    if(!rainOn)return;
+    var img=document.createElement("img");
+    img.src="beef.png";img.className="rainbeef";
+    img.style.left=Math.random()*100+"vw";
+    img.style.animationDuration=(2+Math.random()*3)+"s";
+    document.body.appendChild(img);
+    setTimeout(function(){img.remove()},6000);
+    setTimeout(rainLoop,120);
+  }
+
+  document.getElementById("bigbeef").addEventListener("click",function(){
+    beefClicks++;
+    this.style.transform="scale(1.2)";
+    var t=this;setTimeout(function(){t.style.transform=""},120);
+    if(beefClicks===5){spawnError("please stop clicking the beef");}
+    if(beefClicks===10){
+      rainOn=true;rainLoop();
+      var old=document.title;
+      document.title="BEEF OVERLOAD!!!";
+      setTimeout(function(){document.title=old;document.getElementById("secret").style.display="block";},1500);
+    }
+  });
+
+  document.getElementById("dlbtn").addEventListener("click",function(){
+    var w=document.getElementById("dlwrap"),f=document.getElementById("dlfill"),p=document.getElementById("dlpct");
+    w.style.display="block";
+    var v=0;
+    var iv=setInterval(function(){
+      v+=Math.random()*18;
+      if(v>=99){
+        v=99;clearInterval(iv);
+        setTimeout(function(){spawnError("download failed: beef is already inside you")},600);
+      }
+      f.style.width=v+"%";p.textContent=Math.floor(v)+"%";
+    },200);
+  });
+
+  function spawnError(msg){
+    if(document.querySelectorAll(".errwin").length>14)return;
+    var d=document.createElement("div");
+    d.className="errwin";
+    d.style.left=(20+Math.random()*(window.innerWidth-360))+"px";
+    d.style.top=(20+Math.random()*(window.innerHeight-180))+"px";
+    d.innerHTML='<div class="etitle">System Error</div><div class="ebody"><img src="beef.png"><span>'+msg+'</span></div><button class="eok">OK</button>';
+    document.body.appendChild(d);
+    d.querySelector(".eok").addEventListener("click",function(){
+      d.remove();
+      if(Math.random()<0.5)spawnError(errs[Math.floor(Math.random()*errs.length)]);
+    });
+    dragify(d);
+  }
+
+  function dragify(el){
+    var title=el.querySelector(".etitle"),drag=false,ox=0,oy=0;
+    title.addEventListener("mousedown",function(e){drag=true;ox=e.clientX-el.offsetLeft;oy=e.clientY-el.offsetTop;e.preventDefault();});
+    document.addEventListener("mousemove",function(e){if(drag){el.style.left=(e.clientX-ox)+"px";el.style.top=(e.clientY-oy)+"px";}});
+    document.addEventListener("mouseup",function(){drag=false;});
+  }
+
+  var lastTrail=0;
+  document.addEventListener("mousemove",function(e){
+    var now=Date.now();
+    if(now-lastTrail<70)return;
+    lastTrail=now;
+    var img=document.createElement("img");
+    img.src="beef.png";img.className="trailbeef";
+    img.style.left=(e.clientX-11)+"px";img.style.top=(e.clientY-11)+"px";
+    document.body.appendChild(img);
+    setTimeout(function(){img.remove()},700);
+  });
+
+  var counterEl=document.getElementById("counter");
+  function renderCount(n){
+    counterEl.innerHTML="";
+    String(n).padStart(8,"0").split("").forEach(function(ch){
+      var s=document.createElement("span");s.textContent=ch;counterEl.appendChild(s);
+    });
+  }
+  fetch("https://abacus.jasoncameron.dev/hit/beefexe-githubsite")
+    .then(function(r){if(!r.ok)throw 0;return r.text()})
+    .then(function(t){var n=parseInt(t,10);if(isNaN(n))throw 0;renderCount(n)})
+    .catch(function(){
+      var hits=parseInt(localStorage.getItem("beef_hits")||"0",10);
+      if(!hits){hits=6660+Math.floor(Math.random()*100);}
+      hits++;localStorage.setItem("beef_hits",hits);
+      renderCount(hits);
+    });
+
+  if(!window.hcb_user){hcb_user={};}
+  (function(){
+    var s=document.createElement("script");
+    var l=hcb_user.PAGE||(""+window.location).replace(/['<"]/g,"");
+    s.setAttribute("async",true);
+    s.src="https://www.htmlcommentbox.com/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&opts=16862&num=10";
+    if(typeof s!=="undefined")document.getElementsByTagName("head")[0].appendChild(s);
+  })();
+
+  window.fakeLink=function(msg){
+    spawnError(msg);
+    return false;
+  };
+
+  var realTitle=document.title;
+  document.addEventListener("visibilitychange",function(){
+    document.title=document.hidden?"the beef misses you...":realTitle;
+  });
+
+  setTimeout(function(){spawnError("welcome to my lil space :)");},4000);
+})();
+</script>
+</body>
+</html>
